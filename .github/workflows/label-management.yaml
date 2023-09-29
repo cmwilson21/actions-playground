@@ -11,7 +11,7 @@ name: Move assigned issues into columns
 on:
   issues:
     types:
-      - labeled: 'easy'
+      - labeled
 
 permissions: # It is okay to keep this.
   issues: read
@@ -22,8 +22,13 @@ env:
 
 jobs:
   automate-project-columns:
-    runs-on: ubuntu-latest
-    steps:
+   if: >-
+      ${{
+        github.repository == 'https://github.com/cmwilson21/actions-playground' &&
+        github.event.label.name == 'easy'
+      }}
+   runs-on: ubuntu-latest
+   steps:
       - name: Checkout repository
         uses: actions/checkout@v2
       
