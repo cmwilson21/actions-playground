@@ -25,7 +25,7 @@ jobs:
         uses: alex-page/github-project-automation-plus@7ffb872c64bd809d23563a130a0a97d01dfa8f43
         with:
           project: test label automation board
-          column: easy
+          column: Easy label
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       # - name: remove label
