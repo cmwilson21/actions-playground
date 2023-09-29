@@ -11,6 +11,9 @@ on:
     types: 
     - labeled
 
+permissions:
+  issues: read
+
 jobs:
   automate-project-columns:
     if: >-
