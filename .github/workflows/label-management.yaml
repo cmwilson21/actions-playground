@@ -35,8 +35,9 @@ jobs:
         uses: peter-evans/create-or-update-project-card@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          column-id: ${{ steps.get_board_id.outputs.column_id }}
-          content-id: ${{ github.event.issue.id }}
+          # column-id: ${{ steps.get_board_id.outputs.column_id }}
+          # content-id: ${{ github.event.issue.id }}
+          column-name: "Easy label"
           content-type: Issue
           position: top
 
