@@ -9,17 +9,17 @@ name: Move assigned issues into columns
 on:
   issues:
     types: 
-    - labeled
+    - labeled: 'easy'
 
 permissions:
   issues: read
 
 jobs:
   automate-project-columns:
-    if: >-
-      ${{
-        github.event.label.name == 'easy'
-      }}
+    # if: >-
+    #   ${{
+    #     github.event.label.name == 'easy'
+    #   }}
     runs-on: ubuntu-latest
     steps:
       - uses: alex-page/github-project-automation-plus@v0.8.3
