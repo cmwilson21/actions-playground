@@ -1,19 +1,17 @@
-name: Move labelled issues to their correct column
+# name: Move labelled issues to their correct column
 
 # **What it does**: When a PR in the open source repo is labeled "ready to merge," the "waiting for review" label is removed and the PR is moved to the "Triage" column.
 # **Why we have it**: To help with managing our project boards.
 # **Who does it impact**: Open source contributors, open-source maintainers.
 
+name: Move assigned issues into columns
+
 on:
   issues:
-    types:
-      - labeled
-
-permissions:
-  issues: write
+    types: labeled
 
 jobs:
-  move_easy_card:
+  automate-project-columns:
     if: >-
       ${{
         github.repository == 'https://github.com/cmwilson21/actions-playground' &&
@@ -21,12 +19,27 @@ jobs:
       }}
     runs-on: ubuntu-latest
     steps:
-      - name: move easy issue
-        uses: alex-page/github-project-automation-plus@7ffb872c64bd809d23563a130a0a97d01dfa8f43
+      - uses: alex-page/github-project-automation-plus@v0.8.3
         with:
           project: test label automation board
-          column: Easy label
+          column: easy
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+
+  # move_easy_card:
+  #   if: >-
+  #     ${{
+  #       github.repository == 'https://github.com/cmwilson21/actions-playground' &&
+  #       github.event.label.name == 'easy'
+  #     }}
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: move easy issue
+  #       uses: alex-page/github-project-automation-plus@7ffb872c64bd809d23563a130a0a97d01dfa8f43
+  #       with:
+  #         project: test label automation board
+  #         column: Easy label
+  #         repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       # - name: remove label
       #   uses: andymckay/labeler@e6c4322d0397f3240f0e7e30a33b5c5df2d39e90
