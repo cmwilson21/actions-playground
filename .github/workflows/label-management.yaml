@@ -18,7 +18,7 @@ jobs:
       # Check if project board exists and get its ID
       - name: Get project board ID
         id: get_board_id
-        uses: peter-evans/find-project-columns@v1
+        uses: peter-evans/create-or-update-project-card@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           project-name: "test label automation board"
@@ -32,7 +32,7 @@ jobs:
       # Move issue to "Easy label" column if it has "easy" label
       - name: Move issue to "Easy label" column
         if: ${{ steps.easy_issue.outputs.easy_issue == 'true' }}
-        uses: peter-evans/create-or-update-project-card@v1
+        uses: peter-evans/create-or-update-project-card@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           column-id: ${{ steps.get_board_id.outputs.column_id }}
