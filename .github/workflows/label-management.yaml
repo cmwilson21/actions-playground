@@ -1,3 +1,50 @@
+name: Move easy issues to Easy Label column
+
+on:
+  issues:
+    types:
+      - labeled
+
+permissions:
+  issues: read
+
+jobs:
+  move-issue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Check if project board exists and get its ID
+      - name: Get project board ID
+        id: get_board_id
+        uses: peter-evans/find-project-columns@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          project-name: "test label automation board"
+          column-name: "Easy label"
+
+      # Check if issue has "easy" label
+      - name: Issue has "easy" label?
+        run: echo ::set-output name=easy_issue::$(echo "${{ github.event.issue.labels }}" | grep -q "easy" && echo "true" || echo "false")
+        id: easy_issue
+
+      # Move issue to "Easy label" column if it has "easy" label
+      - name: Move issue to "Easy label" column
+        if: ${{ steps.easy_issue.outputs.easy_issue == 'true' }}
+        uses: peter-evans/create-or-update-project-card@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          column-id: ${{ steps.get_board_id.outputs.column_id }}
+          content-id: ${{ github.event.issue.id }}
+          content-type: Issue
+          position: top
+
+
+
+
+
+
 # name: Move labelled issues to their correct column
 
 # **What it does**: When a PR in the open source repo is labeled "ready to merge," the "waiting for review" label is removed and the PR is moved to the "Triage" column.
@@ -6,52 +53,52 @@
 
 
 
-name: Move assigned issues into columns
+# name: Move assigned issues into columns
 
-on:
-  issues:
-    types:
-      - labeled
+# on:
+#   issues:
+#     types:
+#       - labeled
 
-permissions: # It is okay to keep this.
-  issues: read
+# permissions: # It is okay to keep this.
+#   issues: read
 
-env:
-  PROJECT_NAME: 'test label automation board'
-  COLUMN_NAME: 'Easy label'
+# env:
+#   PROJECT_NAME: 'test label automation board'
+#   COLUMN_NAME: 'Easy label'
 
-jobs:
-  automate-project-columns:
-   runs-on: ubuntu-latest
-   steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+# jobs:
+#   automate-project-columns:
+#    runs-on: ubuntu-latest
+#    steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v2
       
-      # Ensure project board exists
-      - name: Check if project exists
-        id: check_project
-        uses: peter-evans/create-or-update-project@v1
-        with:
-          name: ${{ env.PROJECT_NAME }}
-          body: 'Project board for automated issues'
-          state: 'open'
+#       # Ensure project board exists
+#       - name: Check if project exists
+#         id: check_project
+#         uses: peter-evans/create-or-update-project@v1
+#         with:
+#           name: ${{ env.PROJECT_NAME }}
+#           body: 'Project board for automated issues'
+#           state: 'open'
 
-      # Ensure project column exists
-      - name: Check if column exists
-        id: check_column
-        uses: peter-evans/create-or-update-project-column@v1
-        with:
-          project-id: ${{ steps.check_project.outputs.id }}
-          name: ${{ env.COLUMN_NAME }}
-          position: '1'
+#       # Ensure project column exists
+#       - name: Check if column exists
+#         id: check_column
+#         uses: peter-evans/create-or-update-project-column@v1
+#         with:
+#           project-id: ${{ steps.check_project.outputs.id }}
+#           name: ${{ env.COLUMN_NAME }}
+#           position: '1'
 
-      # Move issue to project column
-      - name: Move issue to column
-        uses: alex-page/github-project-automation-plus@v0.8.3
-        with:
-          project: ${{ env.PROJECT_NAME }}
-          column: ${{ env.COLUMN_NAME }}
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+#       # Move issue to project column
+#       - name: Move issue to column
+#         uses: alex-page/github-project-automation-plus@v0.8.3
+#         with:
+#           project: ${{ env.PROJECT_NAME }}
+#           column: ${{ env.COLUMN_NAME }}
+#           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
 
 
