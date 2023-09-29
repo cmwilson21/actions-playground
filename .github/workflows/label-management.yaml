@@ -8,7 +8,8 @@ name: Move assigned issues into columns
 
 on:
   issues:
-    types: labeled
+    types: 
+    - labeled
 
 jobs:
   automate-project-columns:
