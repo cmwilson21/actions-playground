@@ -4,29 +4,80 @@
 # **Why we have it**: To help with managing our project boards.
 # **Who does it impact**: Open source contributors, open-source maintainers.
 
+
+
 name: Move assigned issues into columns
 
 on:
   issues:
-    types: 
-    - labeled: 'easy'
+    types:
+      - labeled: 'easy'
 
-permissions:
+permissions: # It is okay to keep this.
   issues: read
+
+env:
+  PROJECT_NAME: 'test label automation board'
+  COLUMN_NAME: 'Easy label'
 
 jobs:
   automate-project-columns:
-    # if: >-
-    #   ${{
-    #     github.event.label.name == 'easy'
-    #   }}
     runs-on: ubuntu-latest
     steps:
-      - uses: alex-page/github-project-automation-plus@v0.8.3
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      
+      # Ensure project board exists
+      - name: Check if project exists
+        id: check_project
+        uses: peter-evans/create-or-update-project@v1
         with:
-          project: test label automation board
-          column: Easy label
+          name: ${{ env.PROJECT_NAME }}
+          body: 'Project board for automated issues'
+          state: 'open'
+
+      # Ensure project column exists
+      - name: Check if column exists
+        id: check_column
+        uses: peter-evans/create-or-update-project-column@v1
+        with:
+          project-id: ${{ steps.check_project.outputs.id }}
+          name: ${{ env.COLUMN_NAME }}
+          position: '1'
+
+      # Move issue to project column
+      - name: Move issue to column
+        uses: alex-page/github-project-automation-plus@v0.8.3
+        with:
+          project: ${{ env.PROJECT_NAME }}
+          column: ${{ env.COLUMN_NAME }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+
+
+# name: Move assigned issues into columns
+
+# on:
+#   issues:
+#     types: 
+#     - labeled: 'easy'
+
+# permissions:
+#   issues: read
+
+# jobs:
+#   automate-project-columns:
+#     # if: >-
+#     #   ${{
+#     #     github.event.label.name == 'easy'
+#     #   }}
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: alex-page/github-project-automation-plus@v0.8.3
+#         with:
+#           project: test label automation board
+#           column: Easy label
+#           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
 
   # move_easy_card:
