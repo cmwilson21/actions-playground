@@ -22,11 +22,6 @@ env:
 
 jobs:
   automate-project-columns:
-   # if: >-
-   #    ${{
-   #      github.repository == 'https://github.com/cmwilson21/actions-playground' &&
-   #      github.event.label.name == 'easy'
-   #    }}
    runs-on: ubuntu-latest
    steps:
       - name: Checkout repository
