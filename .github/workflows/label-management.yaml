@@ -23,7 +23,7 @@ jobs:
       - uses: alex-page/github-project-automation-plus@v0.8.3
         with:
           project: test label automation board
-          column: easy
+          column: Easy label
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
 
